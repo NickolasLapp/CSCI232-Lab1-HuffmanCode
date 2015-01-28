@@ -53,6 +53,16 @@ class Node<T> implements Comparable
 		else
 			return 1;
 	}
+
+	public void printDataAndCodes(String code) {
+		if(dData != null)
+			System.out.println("dData: " + dData + "\tCode: " + code + "\tFrequency: " + iData);
+		else
+		{
+			leftChild.printDataAndCodes(code + "0");
+			rightChild.printDataAndCodes(code + "1");
+		}
+	}
 } // end class Node
 //////////////////////////////////////////////////////////////////
 //class BinaryTree<T>

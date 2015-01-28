@@ -44,14 +44,14 @@ public class HuffmanTree {
 			nodes.add(new Node<Character>(frequencyTable.get(c), c));
 		}
 		
-		System.out.println("Frequency \t char");
-
 		while(nodes.size() > 1)
 		{
 			nodes.add(new Node(nodes.poll(), nodes.poll()));
 		}
-		
 		encodingTree = nodes.poll();
+		
+		encodingTree.printDataAndCodes("");
+		
 	}
 	
 	private void encode(byte data)
@@ -68,6 +68,5 @@ public class HuffmanTree {
 	{
 		InputStream data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
 		new HuffmanTree(data);
-
 	}
 }
