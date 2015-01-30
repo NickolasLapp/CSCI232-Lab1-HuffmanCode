@@ -49,7 +49,6 @@ public class HuffmanTree {
 			nodes.add(new Node(nodes.poll(), nodes.poll()));
 		}
 		encodingTree = nodes.poll();
-		
 		encodingTree.printDataAndCodes("");
 		
 	}
