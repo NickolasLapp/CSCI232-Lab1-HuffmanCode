@@ -63,6 +63,28 @@ class Node<T> implements Comparable
 			rightChild.printDataAndCodes(code + "1");
 		}
 	}
+	
+	public void fillEncodingTable(Map<T, String> encodingTable, String code) {
+		if(dData != null)
+			encodingTable.put(dData, code);
+		else
+		{
+			leftChild.fillEncodingTable(encodingTable, code + "0");
+			rightChild.fillEncodingTable(encodingTable, code + "1");
+		}
+	}
+
+	public T readCode(String code) {
+		Node<T> current = this;
+		for(char c : code.toCharArray())
+		{
+			if('1' == c)
+				current = current.rightChild;
+			else
+				current = current.leftChild;
+		}		
+		return current.dData;
+	}
 } // end class Node
 //////////////////////////////////////////////////////////////////
 //class BinaryTree<T>

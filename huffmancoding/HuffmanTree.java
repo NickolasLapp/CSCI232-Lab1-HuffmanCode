@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 public class HuffmanTree {
 	
 	private Map<Character, Integer> frequencyTable; 
+	private Map<Character, String> encodingTable; 
 	private Node<Character> encodingTree;
 	
 	public HuffmanTree(InputStream dataStream)
@@ -46,26 +47,39 @@ public class HuffmanTree {
 		
 		while(nodes.size() > 1)
 		{
-			nodes.add(new Node(nodes.poll(), nodes.poll()));
+			nodes.add(new Node<Character>(nodes.poll(), nodes.poll()));
 		}
-		encodingTree = nodes.poll();
-		encodingTree.printDataAndCodes("");
-		
+		encodingTree = nodes.poll();	
+		encodingTable = new HashMap<Character, String>();
+		encodingTree.fillEncodingTable(encodingTable, "");
 	}
 	
-	private void encode(byte data)
+	private String encodeOne(char data)
 	{
-		
+		try{
+			return encodingTable.get(data);
+		}
+		catch(NullPointerException e){
+			System.out.println("Please create encoding Table Before encoding.");
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	private void decode(InputStream dataStream)
+	private String decode(InputStream dataStream) throws IOException
 	{
-		
+		String message = new String();
+		String code;
+		while(!(code = Integer.toString(dataStream.read())).equals("$"))
+			message.concat(encodingTree.readCode(code).toString());
+		return message;
 	}
 	
 	public static void main(String[] args) throws IOException
 	{
 		InputStream data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
 		new HuffmanTree(data);
+		
+		
 	}
 }
