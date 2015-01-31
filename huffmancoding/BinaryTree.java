@@ -1,11 +1,8 @@
 package huffmancoding;
 
-// tree.java
-// demonstrates binary tree
-// to run this program: C>java TreeApp
 import java.io.*;
 import java.util.*; // for Stack class
-////////////////////////////////////////////////////////////////
+
 class Node implements Comparable
 {
 	public int iData; // data item (key)
@@ -69,7 +66,7 @@ class Node implements Comparable
 			encodingTable.put(dData, code);
 		else
 		{
-			byte nextCodeLeft [] = Arrays.copyOf(code, code.length+1); //nextCode initialized with 0 as last bit
+			byte nextCodeLeft [] = Arrays.copyOf(code, code.length+1);
 			nextCodeLeft[nextCodeLeft.length-1] = (byte)0;
 			leftChild.fillEncodingTable(encodingTable, nextCodeLeft);
 			
