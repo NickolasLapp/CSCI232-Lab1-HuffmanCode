@@ -29,7 +29,7 @@ public class HuffmanTree {
 	
 	private void generateFrequencyTable(InputStream dataStream) throws IOException
 	{	
-		byte buffer[] = new byte[1000];
+		byte buffer[] = new byte[4000000];
 		frequencyTable = new HashMap<Byte, Integer>();
 		
 		dataStream.read(buffer);
@@ -46,7 +46,7 @@ public class HuffmanTree {
 	
 	private void generateFrequencyTableFromBytes(InputStream dataStream) throws IOException
 	{	
-		byte buffer[] = new byte[10000000];
+		byte buffer[] = new byte[4000000];
 		frequencyTable = new HashMap<Byte, Integer>();
 		
 		int bytesRead = dataStream.read(buffer);
@@ -79,9 +79,9 @@ public class HuffmanTree {
 
 	private byte[] encodeAll(InputStream dataStream) throws IOException
 	{
-		byte buffer []= new byte[10000000];
+		byte buffer []= new byte[4000000];
 		
-		byte codedMessage []= new byte[10000000];
+		byte codedMessage []= new byte[40000000];
 		int bytesRead = dataStream.read(buffer);
 		int codeIndex = 0;
 		
@@ -108,7 +108,7 @@ public class HuffmanTree {
 	
 	private byte[] decodeBytes(InputStream dataStream) throws IOException
 	{		
-		byte codedBytes[] = new byte [10000000];
+		byte codedBytes[] = new byte [4000000];
 		int bytesRead = dataStream.read(codedBytes);
 	    
 	    return encodingTree.readCodeAsBinary(codedBytes, bytesRead);
@@ -124,13 +124,13 @@ public class HuffmanTree {
 	
 	public static void main(String[] args) throws IOException
 	{
-		byte buffer[] = new byte[10000000];
-		InputStream data = new FileInputStream("/home/nickolas/Desktop/testJPG.jpg");
+		byte buffer[] = new byte[4000000];
+		InputStream data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
 		int numBytesInFile = data.read(buffer);	
 		
-		data = new FileInputStream("/home/nickolas/Desktop/testJPG.jpg");
+		data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
 		HuffmanTree testTree = new HuffmanTree(data, true);
-		data =  new FileInputStream("/home/nickolas/Desktop/testJPG.jpg");
+		data =  new FileInputStream("/home/nickolas/Desktop/testFile.txt");
 		
 		byte[] encodedBytes = testTree.encodeAll(data);
 		testTree.encodingTree.printDataAndCodes("");
@@ -138,7 +138,7 @@ public class HuffmanTree {
 		data = new ByteArrayInputStream(encodedBytes);
 
 		byte[] dataToWrite = testTree.decodeBytes(data);
-		FileOutputStream out = new FileOutputStream("/home/nickolas/Desktop/outputJPGTest.jpg");
+		FileOutputStream out = new FileOutputStream("/home/nickolas/Desktop/outputtestFile.txt");
 		
 //		for(int i = 0; i < buffer.length; i++)
 //		{
