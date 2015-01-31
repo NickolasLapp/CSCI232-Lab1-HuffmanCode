@@ -69,11 +69,13 @@ class Node implements Comparable
 			encodingTable.put(dData, code);
 		else
 		{
-			byte nextCode [] = Arrays.copyOf(code, code.length+1); //nextCode initialized with 0 as last bit
-			leftChild.fillEncodingTable(encodingTable, nextCode);
+			byte nextCodeLeft [] = Arrays.copyOf(code, code.length+1); //nextCode initialized with 0 as last bit
+			nextCodeLeft[nextCodeLeft.length-1] = (byte)0;
+			leftChild.fillEncodingTable(encodingTable, nextCodeLeft);
 			
-			nextCode[nextCode.length] = 1;
-			rightChild.fillEncodingTable(encodingTable, nextCode);
+			byte nextCodeRight [] = Arrays.copyOf(code, code.length+1); 
+			nextCodeRight[nextCodeRight.length-1] = (byte)1;
+			rightChild.fillEncodingTable(encodingTable, nextCodeRight);
 		}
 	}
 
@@ -107,18 +109,18 @@ class Node implements Comparable
 	    return ret;
 	}
 	
-	public byte[] readCodeAsBinary(String code) {
+	public byte[] readCodeAsBinary(byte[] code, int numBytes) {
 		Node head = this;
 		Node current = this;
 		ArrayList<Byte> message = new ArrayList<Byte>(1000);
-		for(char c : code.toCharArray())
+		for(int i = 0; i < numBytes; i++)
 		{
 			if(current.dData != null)
 			{
 				message.add(current.dData);
 				current = head;
 			}
-			if('1' == c)
+			if((byte)1 == code[i])
 				current = current.rightChild;
 			else
 				current = current.leftChild;
