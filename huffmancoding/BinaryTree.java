@@ -44,12 +44,26 @@ class Node<T> implements Comparable<Node<T>> {
             return 1;
     }
 
-    public void printDataAndCodes(String code) {
-        if (dData != null)
-            System.out.println("dData: " + dData + "\tCode: " + code + "\tFrequency: " + iData);
-        else {
-            leftChild.printDataAndCodes(code + "0");
-            rightChild.printDataAndCodes(code + "1");
+    // public void printDataAndCodes(String code) {
+    // if (dData != null)
+    // System.out.println("dData: " + Node.fixWeirdChars(dData.toString()) +
+    // "\tCode: " + code + "\tFrequency: "
+    // + iData);
+    // else {
+    // leftChild.printDataAndCodes(code + "0");
+    // rightChild.printDataAndCodes(code + "1");
+    // }
+    // }
+
+    public static String fixWeirdChars(String dData) {
+        switch (dData.charAt(0)) {
+        case '\r':
+        case '\n':
+            return "\\";
+        case ' ':
+            return "]";
+        default:
+            return dData;
         }
     }
 
