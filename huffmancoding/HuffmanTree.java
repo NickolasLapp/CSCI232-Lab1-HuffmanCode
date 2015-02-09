@@ -22,6 +22,7 @@ public class HuffmanTree {
 
     public HuffmanTree(String inputString) throws IOException {
         generateFrequencyTable(inputString);
+        buildTree();
     }
 
     private void generateFrequencyTable(String inputString) throws IOException {
@@ -62,7 +63,6 @@ public class HuffmanTree {
     }
 
     private String encodeAll(String inputString) throws IOException {
-        buildTree();
         String codedMessage = "";
         for (char toEncode : inputString.toCharArray()) {
             if (toEncode == '$')
@@ -127,7 +127,7 @@ public class HuffmanTree {
                 printFrequencyTable(huffman.frequencyTable);
                 break;
             case 's':
-                // huff.displayTree();
+                huffman.encodingTree.displayTree();
                 break;
             case 'c':
                 if (inputString == null)

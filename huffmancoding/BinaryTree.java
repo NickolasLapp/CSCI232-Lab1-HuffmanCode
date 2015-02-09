@@ -1,5 +1,6 @@
 package huffmancoding;
 
+import java.lang.reflect.Array;
 import java.util.*; // for Stack class
 
 class Node<T> implements Comparable<Node<T>> {
@@ -27,13 +28,13 @@ class Node<T> implements Comparable<Node<T>> {
 
     }
 
-    public void displayNode() // display ourself
+    public void displayNode(Node<T> node) // display ourself
     {
         System.out.print('{');
-        System.out.print(iData);
-        System.out.print(", ");
-        System.out.print(dData);
-        System.out.print("} ");
+        System.out.print(node == null ? "--" : node.iData);
+        System.out.print(",");
+        System.out.print(node == null ? "--" : node.dData == null ? "--" : Node.fixWeirdChars(node.dData.toString()));
+        System.out.print("}");
     }
 
     @Override
@@ -91,5 +92,69 @@ class Node<T> implements Comparable<Node<T>> {
                 current = current.leftChild;
         }
         return toReturn + current.dData;
+    }
+
+    public void displayTree() {
+        int depth = getTreeDepth(this);
+
+        Node<T> treeList[][] = new Node[depth][];
+        for (int i = 0; i < depth; i++)
+            treeList[i] = getNodesAtLevel(i, this, depth);
+
+        for (int level = 0; level < treeList.length; level++) {
+            for (int nodeNum = 0; nodeNum < treeList[level].length; nodeNum++) {
+                displayNodeCentered(treeList[level][nodeNum], level, depth, nodeNum == 0);
+            }
+            System.out.println();
+        }
+
+    }
+
+    private void displayNodeCentered(Node<T> node, int level, int depth, boolean firstNode) {
+        if (firstNode) {
+            for (double i = 0.; i < 2. * depth * 7. / (level + 1.); i++) {
+                System.out.print(' ');
+            }
+            displayNode(node);
+            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
+                System.out.print(' ');
+            }
+        } else {
+            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
+                System.out.print(' ');
+            }
+            displayNode(node);
+            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
+                System.out.print(' ');
+            }
+        }
+
+    }
+
+    private Node<T>[] getNodesAtLevel(int i, Node<T> node, int depth) {
+        if (i == 0)
+            return new Node[] { node };
+        else
+            return concatenate(node == null ? new Node[i] : getNodesAtLevel(i - 1, node.leftChild, depth),
+                    node == null ? new Node[i] : getNodesAtLevel(i - 1, node.rightChild, depth));
+    }
+
+    public Node<T>[] concatenate(Node<T>[] a, Node<T>[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        @SuppressWarnings("unchecked")
+        Node<T>[] c = (Node<T>[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+
+        return c;
+    }
+
+    private int getTreeDepth(Node<T> node) {
+        if (node.rightChild == null)
+            return 1;
+        else
+            return 1 + Math.max(getTreeDepth(node.leftChild), getTreeDepth(node.rightChild));
     }
 }
