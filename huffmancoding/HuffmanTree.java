@@ -14,9 +14,9 @@ import java.util.PriorityQueue;
 
 public class HuffmanTree {
 
-    private Map<Integer, Integer> frequencyTable;
-    private Map<Integer, String> encodingTable;
-    private Node encodingTree;
+    private Map<Character, Integer> frequencyTable;
+    private Map<Character, String> encodingTable;
+    private Node<Character> encodingTree;
 
     public HuffmanTree(InputStream dataStream) throws IOException {
         generateFrequencyTable(dataStream);
@@ -24,65 +24,52 @@ public class HuffmanTree {
     }
 
     private void generateFrequencyTable(InputStream dataStream) throws IOException {
-        frequencyTable = new HashMap<Integer, Integer>();
-        int read;
-        while ((read = dataStream.read()) != (int) '$') {
+        frequencyTable = new HashMap<Character, Integer>();
+
+        char read;
+        while ((read = (char) dataStream.read()) != '$') {
             Integer previousFrequency = frequencyTable.get(read);
             frequencyTable.put(read, previousFrequency == null ? 1 : previousFrequency + 1);
         }
     }
 
     private void buildTree() {
-        PriorityQueue<Node> nodes = new PriorityQueue<Node>(frequencyTable.size());
+        PriorityQueue<Node<Character>> nodes = new PriorityQueue<Node<Character>>(frequencyTable.size());
 
-        for (int c : frequencyTable.keySet()) {
-            nodes.add(new Node(frequencyTable.get(c), c));
+        for (char c : frequencyTable.keySet()) {
+            nodes.add(new Node<Character>(frequencyTable.get(c), c));
         }
 
         while (nodes.size() > 1) {
-            nodes.add(new Node(nodes.poll(), nodes.poll()));
+            nodes.add(new Node<Character>(nodes.poll(), nodes.poll()));
         }
         encodingTree = nodes.poll();
-        encodingTable = new HashMap<Integer, String>();
+        encodingTable = new HashMap<Character, String>();
         encodingTree.fillEncodingTable(encodingTable, "");
+        encodingTree.printDataAndCodes("");
     }
 
     private String encodeAll(InputStream dataStream) throws IOException {
         String codedMessage = "";
-        int read;
-        while ((read = dataStream.read()) != (int) '$') {
-            codedMessage = codedMessage.concat(encodingTable.get(read));
-        }
+        char toEncode;
+        while ((toEncode = (char) dataStream.read()) != '$')
+            codedMessage = codedMessage.concat(encodingTable.get(toEncode).toString());
         return codedMessage;
     }
 
-    private byte[] decodeBytes(InputStream dataStream) throws IOException {
-        byte codedBytes[] = new byte[4000000];
-        int bytesRead = dataStream.read(codedBytes);
-
-        return encodingTree.readCodeAsBinary(codedBytes, bytesRead);
+    private String decode(String codedMessage) {
+        return encodingTree.readCode(codedMessage);
     }
 
     public static void main(String[] args) throws IOException {
         InputStream data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
         HuffmanTree testTree = new HuffmanTree(data);
-
+        data.close();
         data = new FileInputStream("/home/nickolas/Desktop/testFile.txt");
-        String encodedString = testTree.encodeAll(data);
 
-        testTree.encodingTree.printDataAndCodesAsChars("");
+        String codedMessage = testTree.encodeAll(data);
+        data.close();
 
-        FileOutputStream out = new FileOutputStream("/home/nickolas/Desktop/outputEncodedFile");
-        for (byte b : encodedBytes)
-            out.write(b);
-        out.close();
-
-        data = new ByteArrayInputStream(encodedBytes);
-
-        byte[] dataToWrite = testTree.decodeBytes(data);
-        out = new FileOutputStream("/home/nickolas/Desktop/outputtestFile.txt");
-        for (byte b : dataToWrite)
-            out.write(b);
-        out.close();
+        System.out.println(testTree.decode(codedMessage));
     }
 }
