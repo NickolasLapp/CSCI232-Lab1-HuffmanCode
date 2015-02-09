@@ -5,11 +5,11 @@ import java.util.*; // for Stack class
 
 class Node implements Comparable<Node> {
     public int iData; // data item (key)
-    public Byte dData; // data item
+    public Integer dData; // data item
     public Node leftChild; // this node's left child
     public Node rightChild; // this node's right child
 
-    public Node(int iData, byte dData) {
+    public Node(int iData, int dData) {
         this.iData = iData;
         this.dData = dData;
     }
@@ -45,27 +45,12 @@ class Node implements Comparable<Node> {
             return 1;
     }
 
-    public void printDataAndCodes(String code) {
-        if (dData != null)
-            System.out.println("dData: " + dData + "\tCode: " + code
-                    + "\tFrequency: " + iData);
-        else {
-            leftChild.printDataAndCodes(code + "0");
-            rightChild.printDataAndCodes(code + "1");
-        }
-    }
-
-    public void fillEncodingTable(Map<Byte, byte[]> encodingTable, byte[] code) {
+    public void fillEncodingTable(Map<Integer, String> encodingTable, String code) {
         if (dData != null)
             encodingTable.put(dData, code);
         else {
-            byte nextCodeLeft[] = Arrays.copyOf(code, code.length + 1);
-            nextCodeLeft[nextCodeLeft.length - 1] = (byte) 0;
-            leftChild.fillEncodingTable(encodingTable, nextCodeLeft);
-
-            byte nextCodeRight[] = Arrays.copyOf(code, code.length + 1);
-            nextCodeRight[nextCodeRight.length - 1] = (byte) 1;
-            rightChild.fillEncodingTable(encodingTable, nextCodeRight);
+            leftChild.fillEncodingTable(encodingTable, code + "0");
+            rightChild.fillEncodingTable(encodingTable, code + "1");
         }
     }
 
@@ -97,7 +82,7 @@ class Node implements Comparable<Node> {
         return ret;
     }
 
-    public byte[] readCodeAsBinary(byte[] code, int numBytes) {
+    public byte[] codeToBytes(byte[] code, int numBytes) {
         Node head = this;
         Node current = this;
         ArrayList<Byte> message = new ArrayList<Byte>(1000);
@@ -116,8 +101,7 @@ class Node implements Comparable<Node> {
 
     public void printDataAndCodesAsChars(String code) {
         if (dData != null)
-            System.out.println("dData: " + (char) (dData & 0xff) + "\tCode: "
-                    + code + "\tFrequency: " + iData);
+            System.out.println("dData: " + (char) (dData & 0xff) + "\tCode: " + code + "\tFrequency: " + iData);
         else {
             leftChild.printDataAndCodesAsChars(code + "0");
             rightChild.printDataAndCodesAsChars(code + "1");
