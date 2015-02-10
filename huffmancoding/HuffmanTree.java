@@ -127,7 +127,10 @@ public class HuffmanTree {
                 printFrequencyTable(huffman.frequencyTable);
                 break;
             case 's':
-                huffman.encodingTree.displayTree();
+                if (inputString == null)
+                    System.out.println("Please enter string first");
+                else
+                    huffman.encodingTree.displayTree();
                 break;
             case 'c':
                 if (inputString == null)

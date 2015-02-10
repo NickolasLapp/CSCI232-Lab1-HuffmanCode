@@ -3,7 +3,7 @@ package huffmancoding;
 import java.lang.reflect.Array;
 import java.util.*; // for Stack class
 
-class Node<T> implements Comparable<Node<T>> {
+class Node<T extends Comparable<?>> implements Comparable<Node<T>> {
     public int iData; // data item (key)
     public T dData; // data item
     public Node<T> leftChild; // this node's left child
@@ -30,11 +30,11 @@ class Node<T> implements Comparable<Node<T>> {
 
     public void displayNode(Node<T> node) // display ourself
     {
-        System.out.print('{');
-        System.out.print(node == null ? "--" : node.iData);
+        // System.out.print('{');
+        System.out.print(node == null ? "---" : String.format("%03d", node.iData));
         System.out.print(",");
-        System.out.print(node == null ? "--" : node.dData == null ? "--" : Node.fixWeirdChars(node.dData.toString()));
-        System.out.print("}");
+        System.out.print(node == null ? "-" : node.dData == null ? "-" : Node.fixWeirdChars(node.dData.toString()));
+        // System.out.print("}");
     }
 
     @Override
@@ -83,7 +83,7 @@ class Node<T> implements Comparable<Node<T>> {
         String toReturn = "";
         for (char c : code.toCharArray()) {
             if (current.dData != null) {
-                toReturn = toReturn.concat(current.dData.toString());
+                toReturn = toReturn.concat(Node.fixWeirdChars(current.dData.toString()));
                 current = head;
             }
             if ('1' == c)
@@ -95,6 +95,7 @@ class Node<T> implements Comparable<Node<T>> {
     }
 
     public void displayTree() {
+
         int depth = getTreeDepth(this);
 
         Node<T> treeList[][] = new Node[depth][];
@@ -103,32 +104,50 @@ class Node<T> implements Comparable<Node<T>> {
 
         for (int level = 0; level < treeList.length; level++) {
             for (int nodeNum = 0; nodeNum < treeList[level].length; nodeNum++) {
-                displayNodeCentered(treeList[level][nodeNum], level, depth, nodeNum == 0);
+                displayNodeCentered(treeList[level][nodeNum], level, depth, nodeNum == treeList[level].length - 1);
             }
-            System.out.println();
+            if (level != depth - 1)
+                printConnectorLines(level, depth, treeList[level].length);
         }
-
+        System.out.println();
     }
 
-    private void displayNodeCentered(Node<T> node, int level, int depth, boolean firstNode) {
-        if (firstNode) {
-            for (double i = 0.; i < 2. * depth * 7. / (level + 1.); i++) {
-                System.out.print(' ');
-            }
-            displayNode(node);
-            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
-                System.out.print(' ');
-            }
-        } else {
-            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
-                System.out.print(' ');
-            }
-            displayNode(node);
-            for (double i = 0.; i < (2. * depth * 7. / (level + 1.)) / ((level + 1)); i++) {
-                System.out.print(' ');
-            }
-        }
+    private void displayNodeCentered(Node<T> node, int level, int depth, boolean lastNode) {
+        int floor = depth - level + 2;
+        int firstSpaces = (int) Math.pow(2, (floor)) - 5 + level / 2;
+        int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 5 + level / 2;
 
+        printSpaces(firstSpaces);
+        displayNode(node);
+        printSpaces(betweenSpaces);
+    }
+
+    private void printConnectorLines(int level, int depth, int numNodes) {
+        int floor = depth - level + 2;
+        int firstSpaces = (int) Math.pow(2, (floor)) - 5 + level / 2;
+        int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 5 + level / 2;
+
+        System.out.println();
+        for (int i = 0; i < numNodes; i++) {
+            printSpaces(firstSpaces / 2);
+            printChar(firstSpaces / 2, '_');
+            printSpaces(5);
+            printChar(betweenSpaces / 2 + 1, '_');
+            printSpaces(betweenSpaces / 2);
+        }
+        System.out.println();
+    }
+
+    private void printChar(int numChars, char toPrint) {
+        for (int i = 0; i < numChars; i++) {
+            System.out.print(toPrint);
+        }
+    }
+
+    private void printSpaces(int numSpaces) {
+        for (int i = 0; i < numSpaces; i++) {
+            System.out.print(" ");
+        }
     }
 
     private Node<T>[] getNodesAtLevel(int i, Node<T> node, int depth) {
@@ -152,8 +171,8 @@ class Node<T> implements Comparable<Node<T>> {
     }
 
     private int getTreeDepth(Node<T> node) {
-        if (node.rightChild == null)
-            return 1;
+        if (node == null)
+            return 0;
         else
             return 1 + Math.max(getTreeDepth(node.leftChild), getTreeDepth(node.rightChild));
     }
